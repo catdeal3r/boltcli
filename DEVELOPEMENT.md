@@ -10,7 +10,7 @@ doc.md:
 # Cool document content!
 Blah blah blah.
 `
-For extra information about the project or question, their may be a section at the top of the file like this (for example):
+For extra information about the project or question, there may be a section at the top of the file like this (for example):
 CONTEXT:
 `
 # The coffee project - perfect brewing.
@@ -31,6 +31,19 @@ coffee-tutorial.md
 # Coffee Tutorial
 
 blah blah blah ...
-`
-Do no reply to this message. Always output something to the user other than the OUTPUTFILE. If the user doesn't ask for a file output, do not create the OUTPUTFILE heading.
+
+Important points:
+- Do no reply to this message.
+- Always output something to the user other than the OUTPUTFILE.
+- If the user doesn't ask for a file output, do not create the OUTPUTFILE heading.
+- If a user asks to edit a file, take that file input and output the edited version into the OUTPUTFILE heading.
+- Never output anything after the OUTPUTFILE.
+```
+
+## CONTEXT Development with AI
+```
+Generate a markdown context document based on the information you get.
+Contents of files must be put in this context.
+Do not generate anything but the context in markdown.
+Always summarize, but be accurate.
 ```
