@@ -1,15 +1,18 @@
 use std::io::{self, Write};
 
 use colored::Colorize;
+use termion::terminal_size;
+use spinoff::{Spinner, spinners, Color};
+
 pub mod utils;
 pub mod structs;
 pub mod conf;
-use termion::terminal_size;
 
 fn main() {
     let conf: conf::Config = conf::get_default_config();
+    let mut model = conf.model.clone();
     
-    print!("Welcome to");
+    print!("\nWelcome to");
 
     println!("{}", structs::TITLE.bold().blue());
 
@@ -19,7 +22,7 @@ fn main() {
     
     loop {
         let mut input = String::new();
-        print!("{}\n", std::env::current_dir().unwrap().display());
+        termimad::print_inline(&format!("{} {} `{}`\n", std::env::current_dir().unwrap().display(), "─".bold().blue(), model));
 
         let (width, _height) = terminal_size().unwrap();
 
@@ -30,13 +33,17 @@ fn main() {
         
         print!("{} ", ">".bold().green());
 
-        // flush to show immediately
         io::stdout().flush().unwrap();
 
-        // read input
         io::stdin()
             .read_line(&mut input)
             .unwrap();
+
+        
+        for _i in 0..width {
+            print!("─");
+        }
+        print!("\n");
 
         input = input.trim().to_string();
 
@@ -48,16 +55,48 @@ fn main() {
         if input == "/exit" {
             std::process::exit(0);
         }
+
+        if input == "/switch" {
+            print!("Model to switch to{} ", ":".bold().green());
+
+            io::stdout().flush().unwrap();
+
+            model.clear();
+
+            io::stdin()
+                .read_line(&mut model)
+                .unwrap();
+
+            model = model.trim().to_string();
+
+            println!("\n{} Switched to {}\n", "✓".bold().green(), model);
+            continue;
+        }
        
         let mut result = String::new();
 
+        let mut thinking_loading = Spinner::new(spinners::Dots2, "Thinking ...", Color::Blue);
+
+        let request = &format!("{}{}{}{}{}", structs::START_DATA, model, structs::MIDDLE_DATA, input, structs::END_DATA);
+        
         utils::send_ai_request(&"https://api.cerebras.ai/v1/chat/completions".to_string(),
-            &format!("{}{}{}", structs::START_DATA, input, structs::END_DATA),
+            request,
             &mut result,
             &conf.key
         );
 
-        utils::check_api_key_is_valid(&result);
+
+        /*
+        println!("\n{}", request);
+        println!("{}", result);
+        */        
+    
+        if !utils::check_result_is_valid(&result) {
+            thinking_loading.success("Finished.");
+            continue;
+        }
+
+        thinking_loading.success("Finished.");
 
         reason = utils::get_reasoning(&result);
         

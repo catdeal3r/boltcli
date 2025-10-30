@@ -1,4 +1,5 @@
 
+use colored::Colorize;
 use curl::easy::{Easy, List};
 use serde_json::Value;
 
@@ -26,18 +27,23 @@ pub fn send_ai_request(url: &String, data: &String, r_output: &mut String, key: 
 }
 
 pub fn get_content(raw_data: &String) -> String {
-    let values: Value = serde_json::from_str(raw_data).unwrap();
-    values["choices"][0]["message"]["content"].as_str().unwrap_or("N/A").to_string()
+    let values: Value = serde_json::from_str(raw_data).unwrap_or("Generation is too long and has been cut off.".into());
+    values["choices"][0]["message"]["content"].as_str().unwrap_or(&format!("({}) Generated response is too long and has been cut off.", "Error".bold().red())).to_string()
 }
 
 pub fn get_reasoning(raw_data: &String) -> String {
-    let values: Value = serde_json::from_str(raw_data).unwrap();
-    values["choices"][0]["message"]["reasoning"].as_str().unwrap_or("N/A").to_string()
+    let values: Value = serde_json::from_str(raw_data).unwrap_or("Generation is too long and has been cut off.".into());
+    values["choices"][0]["message"]["reasoning"].as_str().unwrap_or(&format!("({}) Generated response is too long and has been cut off.", "Error".bold().red())).to_string()
 }
 
-pub fn check_api_key_is_valid(response: &String) {
+pub fn check_result_is_valid(response: &String) -> bool {
     if response == r#"{"message":"Wrong API Key","type":"invalid_request_error","param":"api_key","code":"wrong_api_key"}"# {
         println!("\n({}): Invalid API key.", colored::Colorize::red("Error"));
         std::process::exit(1);
+    } else if response.contains("does not exist or you do not have access to it.\",\"type\":\"not_found_error\",\"param\":\"model\",\"code\":\"model_not_found\"}") {
+        println!("\n({}): Invalid model name.", colored::Colorize::red("Error"));
+        return false;
     }
+    
+    true
 }

@@ -598,6 +598,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "paste"
+version = "1.0.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
+
+[[package]]
 name = "pkg-config"
 version = "0.3.32"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -976,6 +982,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "spinoff"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "20aa2ed67fbb202e7b716ff8bfc6571dd9301617767380197d701c31124e88f6"
+dependencies = [
+ "colored",
+ "once_cell",
+ "paste",
+]
+
+[[package]]
 name = "splitzer"
 version = "0.1.0"
 dependencies = [
@@ -985,6 +1002,7 @@ dependencies = [
  "serde",
  "serde_json",
  "shellexpand",
+ "spinoff",
  "termimad",
  "termion",
  "toml",

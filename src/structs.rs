@@ -1,5 +1,6 @@
 
-pub const START_DATA: &str = "{\n\"model\": \"gpt-oss-120b\",\n\"stream\": false,\n\"max_tokens\": 2048,\n\"temperature\": 0.2,\n\"top_p\": 1,\"messages\": [\n{\n\"role\": \"system\",\n\"content\": \"";
+pub const START_DATA: &str = "{\n\"model\": \""; 
+pub const MIDDLE_DATA: &str = "\",\n\"stream\": false,\n\"max_tokens\": 2048,\n\"temperature\": 0.2,\n\"top_p\": 1,\"messages\": [\n{\n\"role\": \"system\",\n\"content\": \"";
 pub const END_DATA: &str = "\"\n}\n\n]\n}";
 pub const TITLE: &str = r#"
  ________  ________  ___       ___  _________  ________  _______   ________     
@@ -13,9 +14,9 @@ pub const TITLE: &str = r#"
 "#;
 
 pub const COMMANDS: &str = r#"
-`/init` - Setup a context based session.
-`/reason` - Print the reason for an AI's output.
-`/switch` - Switch to a different AI model temporarily.
-`/exit` - Exit.
+`/init`   → Setup a context based session.
+`/reason` → Print the reason for an AI's output.
+`/switch` → Switch to a different AI model temporarily.
+`/exit`   → Exit.
 
 "#;
