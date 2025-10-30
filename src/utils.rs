@@ -1,30 +1,15 @@
 
-use colored::Colorize;
 use curl::easy::{Easy, List};
+use serde_json::Value;
 
-pub const HELP_STR: &str = r#"Available commands:
-- list: Lists connected targets and whether they are online.
-- info [target]: Gets system information about [target].
-- run [target]: Runs the command/s presented by the user in the next line on [target].
-- screenshot [target]: Takes a screenshot of [target] and uploads the result.
-- exit: Exits the program.
-"#;
-
-pub fn output_line_response(line: String) {
-    println!("[{}]\n{}\n", ">".bold().yellow(), line);
-}
-
-pub fn output_line_sys(line: String) {
-    println!("[{}]\n{}\n", "sys".bold().blue(), line);
-}
-
-pub fn send_data_and_add_result_to_str(url: &String, data: &String, r_output: &mut String) {
+pub fn send_ai_request(url: &String, data: &String, r_output: &mut String, key: &str) {
     let mut request = Easy::new();
 
     request.url(url).unwrap();
 
     let mut headers = List::new();
-    headers.append("ngrok-skip-browser-warning: \"ah\"").unwrap();
+    headers.append("Content-Type: application/json").unwrap();
+    headers.append(&format!("Authorization: Bearer {}", key)).unwrap();
 
     request.http_headers(headers).unwrap();
     
@@ -38,4 +23,21 @@ pub fn send_data_and_add_result_to_str(url: &String, data: &String, r_output: &m
     }).unwrap();
 
     transfer.perform().unwrap();
+}
+
+pub fn get_content(raw_data: &String) -> String {
+    let values: Value = serde_json::from_str(raw_data).unwrap();
+    values["choices"][0]["message"]["content"].as_str().unwrap_or("N/A").to_string()
+}
+
+pub fn get_reasoning(raw_data: &String) -> String {
+    let values: Value = serde_json::from_str(raw_data).unwrap();
+    values["choices"][0]["message"]["reasoning"].as_str().unwrap_or("N/A").to_string()
+}
+
+pub fn check_api_key_is_valid(response: &String) {
+    if response == r#"{"message":"Wrong API Key","type":"invalid_request_error","param":"api_key","code":"wrong_api_key"}"# {
+        println!("\n({}): Invalid API key.", colored::Colorize::red("Error"));
+        std::process::exit(1);
+    }
 }
