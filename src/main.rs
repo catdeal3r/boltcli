@@ -3,6 +3,7 @@ use std::io::{self, Write};
 use colored::Colorize;
 use termion::terminal_size;
 use spinoff::{Spinner, spinners, Color};
+use std::{thread::sleep, time::Duration};
 
 pub mod utils;
 pub mod structs;
@@ -11,6 +12,7 @@ pub mod conf;
 fn main() {
     let conf: conf::Config = conf::get_default_config();
     let mut model = conf.model.clone();
+    let mut typing_mode = conf.typing_mode.clone();
     
     print!("\nWelcome to");
 
@@ -22,16 +24,17 @@ fn main() {
     
     loop {
         let mut input = String::new();
-        termimad::print_inline(&format!("{} {} `{}`\n", std::env::current_dir().unwrap().display(), "─".bold().blue(), model));
 
         let (width, _height) = terminal_size().unwrap();
+             
+        termimad::print_inline(&utils::get_status_line(model.clone()));
 
         for _i in 0..width {
             print!("─");
         }
         print!("\n");
         
-        print!("{} ", ">".bold().green());
+        print!("{} ", "█".bold().green());
 
         io::stdout().flush().unwrap();
 
@@ -49,6 +52,12 @@ fn main() {
 
         if input == "/reason" {
             termimad::print_inline(&format!("\n{}\n\n", reason));
+            continue;
+        }
+        
+        if input == "/typing" {
+            typing_mode = !typing_mode;
+            println!("\n{} Switched to typing mode: {}\n", "✓".bold().green(), typing_mode);
             continue;
         }
 
@@ -100,13 +109,21 @@ fn main() {
 
         reason = utils::get_reasoning(&result);
         
-        let content = &format!("\n{}\n", utils::get_content(&result));
+        let content = &format!("\n{}\n\n", utils::get_content(&result));
 
         let skin = termimad::MadSkin::default();
         let area = termimad::Area::full_screen();
         let formatted_content = termimad::FmtText::from(&skin, content, Some(area.width.into()));
 
-        println!("{}", formatted_content);
+        if typing_mode {
+            for c in formatted_content.to_string().chars() {
+                io::stdout().flush().unwrap();
+                print!("{}", c);
+                sleep(Duration::from_millis(1));
+            }
+        } else {
+            println!("{}", formatted_content);
+        }
     }
 }
 

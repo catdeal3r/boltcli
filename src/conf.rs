@@ -14,7 +14,7 @@ fn parse_config(data: &String) -> Config {
     match toml::from_str(&data) {
         Ok(out) => out,
         Err(_) => {
-            println!("({}): Incorrectly configured config file.", colored::Colorize::red("Error"));
+            println!("({}): Incorrectly configured config file. Please make sure you have set all the config options.", colored::Colorize::red("Error"));
             std::process::exit(1);
         }
     }
@@ -27,5 +27,6 @@ pub fn get_default_config() -> Config {
 #[derive(serde::Serialize, serde::Deserialize)]
 pub struct Config {
     pub key: String,
-    pub model: String
+    pub model: String,
+    pub typing_mode: bool
 }
