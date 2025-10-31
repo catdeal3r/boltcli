@@ -7,6 +7,7 @@ use spinoff::{Spinner, spinners, Color};
 pub mod utils;
 pub mod structs;
 pub mod conf;
+pub mod parsing;
 
 fn main() {
     let conf: conf::Config = conf::get_default_config();
@@ -123,12 +124,15 @@ fn main() {
         thinking_loading.success("Finished.");
 
         reason = utils::get_reasoning(&result);
-        
-        let content = &format!("\n{}\n\n", utils::get_content(&result));
-        print!("{}", content);
+
+        let (raw_content, blocks) = parsing::extract_and_remove_blocks(&utils::get_content(&result), "OUTPUTFILE", "OUTPUTFILEEND");
+
+        let content = &format!("\n{}\n", raw_content);
 
         let formatted_content = termimad::FmtText::from(&skin, content, Some(area.width.into()));
         utils::print_via_typing(&formatted_content.to_string(), typing_mode);
+
+        parsing::create_files_from_blocks(&blocks);
     }
 }
 
