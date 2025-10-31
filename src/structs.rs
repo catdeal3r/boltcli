@@ -30,7 +30,7 @@ doc.md:
 Blah blah blah.
 `
 For extra information about the project or question, there may be a section at the top of the file like this (for example):
-CONTEXT:
+CONTEXT
 # The coffee project - perfect brewing.
 
 blah blah blah blah, blah blah.
@@ -40,6 +40,14 @@ blah blah:
 - blah blah
 CONTEXTEND
 and so on.
+
+There may also be a section at the top that has the content of previous questions and answers. For example:
+HISTORY
+what is a cat?
+
+A cat is ... blah blah blah
+HISTORYEND
+
 These files submitted by the user and CONTEXT may be arranged in any which way.
 If the user asks to generate something into a file, simply end your response with 'OUTPUTFILE', then a newline, then the file name and contents, and finally end with 'OUTPUTFILEEND'.
 E.g. If a user ask to generate a coffee tutorial into `coffee-tutorial.md`, output this at the end of the file:
@@ -57,4 +65,5 @@ Important points:
 - If the user doesn't ask for a file output, do not create the OUTPUTFILE heading.
 - If a user asks to edit a file, take that file input and output the edited version into the OUTPUTFILE heading.
 - Never output anything after the OUTPUTFILE.
+- Always respond with something.
 ---"#;

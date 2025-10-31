@@ -21,7 +21,7 @@ fn parse_config(data: &String) -> Config {
 }
 
 pub fn get_default_config() -> Config {
-    parse_config(&get_config_contents(&shellexpand::tilde("~/.config/splitzer/config.toml").to_string()))
+    parse_config(&get_config_contents(&shellexpand::tilde("~/.config/boltcli/config.toml").to_string()))
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]

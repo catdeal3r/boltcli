@@ -14,6 +14,8 @@ fn main() {
     let mut model = conf.model.clone();
     let mut typing_mode = conf.typing_mode.clone();
     
+    let mut history: Vec<String> = Vec::new();
+    
     print!("\nWelcome to");
 
     println!("{}", structs::TITLE.bold().blue());
@@ -57,6 +59,8 @@ fn main() {
 
         input = input.trim().to_string();
 
+        history.push(input.clone());
+
         if input == "/reason" {
             reason = format!("\n{}\n\n", reason);
             let formatted_content = termimad::FmtText::from(&skin, &reason, Some(area.width.into()));
@@ -94,9 +98,12 @@ fn main() {
         let mut result = String::new();
 
         let mut thinking_loading = Spinner::new(spinners::Dots2, "Thinking ...", Color::Blue);
+
         let mut instruct_input_ = String::new();
 
         instruct_input_.push_str(structs::INSTRUCTIONS);
+        parsing::get_context(&mut instruct_input_);
+        parsing::get_history(&mut instruct_input_, &history);
         instruct_input_.push_str(&input);
 
         let clean_input = serde_json::to_string(&instruct_input_).expect("serialization failed");
@@ -109,12 +116,10 @@ fn main() {
             &mut result,
             &conf.key
         );
-
-
-        /*
+        
         println!("\n{}", request);
         println!("{}", result);
-        */
+        
     
         if !utils::check_result_is_valid(&result) {
             thinking_loading.success("Finished.");
@@ -128,6 +133,7 @@ fn main() {
         let (raw_content, blocks) = parsing::extract_and_remove_blocks(&utils::get_content(&result), "OUTPUTFILE", "OUTPUTFILEEND");
 
         let content = &format!("\n{}\n", raw_content);
+        history.push(content.to_string());
 
         let formatted_content = termimad::FmtText::from(&skin, content, Some(area.width.into()));
         utils::print_via_typing(&formatted_content.to_string(), typing_mode);

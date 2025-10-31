@@ -90,3 +90,28 @@ pub fn create_files_from_blocks(blocks: &Vec<String>) {
         println!("");
     }
 }
+
+
+pub fn get_context(str: &mut String) {
+
+    if !std::path::Path::exists(std::path::Path::new("CONTEXT.md")) {
+        return;
+    }
+    
+    let mut context = "CONTEXT\n".to_string();
+    context.push_str(&fs::read_to_string("CONTEXT.md").unwrap());
+    context.push_str("\nCONTEXTEND\n---\n");
+
+    str.push_str(&context);
+}
+
+
+pub fn get_history(str: &mut String, his: &Vec<String>) {
+    let mut history = "HISTORY\n".to_string();
+    for s in his {
+        history.push_str(&format!("{}\n\n", s));
+    }
+    history.push_str("HISTORYEND\n---\n");
+
+    str.push_str(&history);
+}
