@@ -30,3 +30,8 @@ pub struct Config {
     pub model: String,
     pub typing_mode: bool
 }
+
+/*
+pub fn log_info(request: &String, result: &String) {
+    
+}*/

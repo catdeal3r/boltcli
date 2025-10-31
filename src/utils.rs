@@ -62,14 +62,15 @@ pub fn get_status_line(model: String) -> String {
     let mut status_line_str = String::new();
     
     let current_dir: String = std::env::current_dir().unwrap().display().to_string();
-    let current_dir_len = current_dir.len() as u16;
-    
+    let model_str = format!("{} `{}`", "Using".bold().blue(), model);
+
     status_line_str.push_str(&current_dir);
 
-    let model_str = format!("{} `{}`", "Using".bold().blue(), model);
-    let model_str_len = model_str.len() as u16;
+    let current_dir_len = current_dir.len() as i16;
+    let model_str_len = model_str.len() as i16;
+    let width_len = width as i16;
     
-    let padding_amount = width - model_str_len - current_dir_len + 13;
+    let padding_amount = width_len - model_str_len - current_dir_len + 13;
     
     for _i in 0..padding_amount {
         status_line_str.push(' ');
