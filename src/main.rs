@@ -117,9 +117,10 @@ fn main() {
             &conf.key
         );
         
+        /*
         println!("\n{}", request);
         println!("{}", result);
-        
+        */
     
         if !utils::check_result_is_valid(&result) {
             thinking_loading.success("Finished.");

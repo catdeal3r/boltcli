@@ -33,13 +33,13 @@ pub fn send_ai_request(url: &String, data: &String, r_output: &mut String, key: 
 }
 
 pub fn get_content(raw_data: &String) -> String {
-    let values: Value = serde_json::from_str(raw_data).unwrap_or("Generation is too long and has been cut off.".into());
-    values["choices"][0]["message"]["content"].as_str().unwrap_or(&format!("({}) Generated response is too long and has been cut off.", "Error".bold().red())).to_string()
+    let values: Value = serde_json::from_str(raw_data).unwrap_or("gjasfd".into());
+    values["choices"][0]["message"]["content"].as_str().unwrap_or(&format!("({}) Failed to parse content. Check log for details.", "Error".bold().red())).to_string()
 }
 
 pub fn get_reasoning(raw_data: &String) -> String {
-    let values: Value = serde_json::from_str(raw_data).unwrap_or("Generation is too long and has been cut off.".into());
-    values["choices"][0]["message"]["reasoning"].as_str().unwrap_or(&format!("({}) Generated response is too long and has been cut off.", "Error".bold().red())).to_string()
+    let values: Value = serde_json::from_str(raw_data).unwrap_or("gjskhdafg".into());
+    values["choices"][0]["message"]["reasoning"].as_str().unwrap_or(&format!("({}) Failed to parse content. Check log for details.", "Error".bold().red())).to_string()
 }
 
 pub fn check_result_is_valid(response: &String) -> bool {
