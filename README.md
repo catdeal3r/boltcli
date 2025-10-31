@@ -1,3 +1,3 @@
-# Splitzer
+# BoltCli
 
 WIP.
