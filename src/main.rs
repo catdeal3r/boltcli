@@ -93,9 +93,16 @@ fn main() {
         let mut result = String::new();
 
         let mut thinking_loading = Spinner::new(spinners::Dots2, "Thinking ...", Color::Blue);
+        let mut instruct_input_ = String::new();
 
-        let request = &format!("{}{}{}{}{}", structs::START_DATA, model, structs::MIDDLE_DATA, input, structs::END_DATA);
+        instruct_input_.push_str(structs::INSTRUCTIONS);
+        instruct_input_.push_str(&input);
+
+        let clean_input = serde_json::to_string(&instruct_input_).expect("serialization failed");
+        let instruct_input = clean_input[1..clean_input.len() - 1].to_string();
         
+        let request = &format!("{}{}{}{}{}", structs::START_DATA, model, structs::MIDDLE_DATA, instruct_input, structs::END_DATA);
+                
         utils::send_ai_request(&"https://api.cerebras.ai/v1/chat/completions".to_string(),
             request,
             &mut result,
@@ -106,7 +113,7 @@ fn main() {
         /*
         println!("\n{}", request);
         println!("{}", result);
-        */        
+        */
     
         if !utils::check_result_is_valid(&result) {
             thinking_loading.success("Finished.");
