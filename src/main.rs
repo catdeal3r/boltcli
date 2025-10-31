@@ -125,6 +125,7 @@ fn main() {
         reason = utils::get_reasoning(&result);
         
         let content = &format!("\n{}\n\n", utils::get_content(&result));
+        print!("{}", content);
 
         let formatted_content = termimad::FmtText::from(&skin, content, Some(area.width.into()));
         utils::print_via_typing(&formatted_content.to_string(), typing_mode);
