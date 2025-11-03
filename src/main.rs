@@ -1,6 +1,6 @@
 use std::io::{self, Write};
 
-use colored::Colorize;
+use colored::*;
 use termion::terminal_size;
 use spinoff::{Spinner, spinners, Color};
 
@@ -17,18 +17,15 @@ fn main() {
     loop {
         let mut history: Vec<String> = Vec::new();
     
-        print!("\nWelcome to");
-
-        println!("{}", structs::TITLE.bold().blue());
-
-        termimad::print_inline(structs::COMMANDS);
+        utils::print_banner(model.clone(), typing_mode);
+        //termimad::print_inline(structs::COMMANDS);
 
         let mut reason = String::new();
     
         loop {
             let mut input = String::new();
 
-            let (width, _height) = terminal_size().unwrap();
+            let (_width, _height) = terminal_size().unwrap();
 
             let mut skin = termimad::MadSkin::default();
             utils::set_colours(&mut skin);
@@ -37,13 +34,7 @@ fn main() {
              
             termimad::print_inline(&utils::get_status_line(model.clone()));
 
-            print!("┌");
-            for _i in 0..width-1 {
-                print!("─");
-            }
-            print!("\n");
-        
-            print!("│ {} ", "█".bold().blue());
+            print!(" {}  ", ">".bold().blue());
 
             io::stdout().flush().unwrap();
 
@@ -51,12 +42,6 @@ fn main() {
                 .read_line(&mut input)
                 .unwrap();
 
-
-            print!("└");
-            for _i in 0..width-1 {
-                print!("─");
-            }
-            print!("\n");
 
             input = input.trim().to_string();
 
@@ -101,13 +86,13 @@ fn main() {
        
             let mut result = String::new();
 
-            let mut thinking_loading = Spinner::new(spinners::Dots2, "Thinking ...", Color::Blue);
+            let mut thinking_loading = Spinner::new(spinners::Dots3, "Thinking ...", Color::Blue);
 
             let mut instruct_input_ = String::new();
 
             instruct_input_.push_str(structs::INSTRUCTIONS);
             parsing::get_context(&mut instruct_input_);
-            parsing::get_history(&mut instruct_input_, &history);
+            let _ = parsing::get_history(&mut instruct_input_, &history);
             instruct_input_.push_str(&input);
 
             let clean_input = serde_json::to_string(&instruct_input_).expect("serialization failed");
@@ -131,7 +116,8 @@ fn main() {
                 continue;
             }
 
-            thinking_loading.success("Finished.");
+            //thinking_loading.success("Finished.");
+            thinking_loading.clear();
 
             reason = utils::get_reasoning(&result);
 

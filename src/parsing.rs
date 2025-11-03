@@ -92,10 +92,10 @@ pub fn create_files_from_blocks(blocks: &Vec<String>) {
 }
 
 
-pub fn get_context(str: &mut String) {
+pub fn get_context(str: &mut String) -> u16 {
 
     if !std::path::Path::exists(std::path::Path::new("CONTEXT.md")) {
-        return;
+        return 1;
     }
     
     let mut context = "CONTEXT\n".to_string();
@@ -103,6 +103,7 @@ pub fn get_context(str: &mut String) {
     context.push_str("\nCONTEXTEND\n---\n");
 
     str.push_str(&context);
+    0
 }
 
 

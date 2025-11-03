@@ -8,6 +8,7 @@ use std::{
     io::{self, Write},
     thread::sleep, time::Duration
 };
+use crate::parsing;
 
 pub fn send_ai_request(url: &String, data: &String, r_output: &mut String, key: &str) {
     let mut request = Easy::new();
@@ -104,3 +105,93 @@ pub fn set_colours(skin: &mut termimad::MadSkin) {
     skin.code_block.set_bg(style::Color::Rgb { r: 30, g: 30, b: 30 }); 
 }
 
+pub fn print_banner(model_name: String, typing_bool: bool) {
+
+    let greeting = format!("Welcome back.");
+    let line = "│".bold().blue();
+    let line_dim = "│".bold().dimmed();
+    let block = "█▌".bold().blue();
+    let mut model = format!("{} {}", "· Using".bold().dimmed(), model_name.dimmed());
+    for _i in 0..15 - model_name.len() {
+        model.push(' ');
+    }
+
+    let typing;
+
+    if typing_bool {
+        typing = format!("{} {} {} ", "·".bold().dimmed(), "Typing is".dimmed(), "on".bold().dimmed());
+    } else {
+        typing = format!("{} {} {}", "·".bold().dimmed(), "Typing is".dimmed(), "off".bold().dimmed());
+    }
+
+    let mut project_name = String::new();
+    if parsing::get_context(&mut project_name) == 1 {
+        project_name = "# Uninitialized".to_string();
+    }
+
+    project_name = project_name.lines().nth(1).unwrap_or("# Uninitialized").to_string();
+
+    let project_formatted;
+    let project_status;
+    let project_hint;
+
+    if project_name == "# Uninitialized".to_string() {
+        project_formatted = format!("{}                   ", &project_name.bold().dimmed());
+        project_name = "# Uninitialized                   ".to_string();
+        project_status = format!("{} {} {}         {line}", "·".bold().dimmed(), "No".bold().dimmed(), "project is initialized".dimmed());
+        project_hint = format!("{} {} {} {}  {line}", "·".bold().dimmed(), "Use".dimmed(), "/init".bold().dimmed(), "to start a new project".dimmed());
+    } else {
+        if project_name.len() < 23 {
+            let mut padding = String::new();
+            for _i in 0..24 - project_name.len() {
+                padding.push(' ');
+            }
+            
+            project_formatted = format!("{project_name}{padding}");
+            
+            project_name = format!("{project_name}{padding}");
+        } else {
+            project_formatted = format!("{}", project_name);
+        }
+
+        let mut spacing = String::new();
+        for _i in 0..project_name.len() - 24 {
+            spacing.push(' ');
+        }
+        project_status = format!("{} {} {} {spacing} {line}", "·".bold().dimmed(), "Project is".dimmed(), "initialized".bold().dimmed());
+        project_hint = format!("                         {spacing} {line}");
+    }
+
+    let mut end_line = "─────────────".to_string();
+
+    for _i in 0..project_name.len() {
+        end_line.push('─');
+    }
+    end_line.push('╮');
+
+    let mut bottom_line = "╰───────────────────────────────────".to_string();
+
+    for _i in 0..project_name.len() {
+        bottom_line.push('─');
+    }
+    bottom_line.push('╯');
+
+    let mut line_padded = "    ".to_string();
+
+    for _i in 0..project_name.len() {
+        line_padded.push(' ');
+    }
+    line_padded = format!("{}{}", line_padded, "│".bold().blue());
+    
+
+    println!("\n{} BoltCli {} {}", "╭────────".bold().blue(), "v0.8".dimmed(), &end_line.bold().blue());
+    
+    println!("{line}                              {line_dim}{line_padded}
+{line}  {block}   {greeting}          {line_dim}  {project_formatted}  {line}
+{line}   {}  {model}{line_dim}  {project_status}
+{line}  {block}   {typing}        {line_dim}  {project_hint}
+{line}                              {line_dim}{line_padded}",
+        "▐█".bold().blue());
+
+    println!("{}\n", &bottom_line.bold().blue());
+}
