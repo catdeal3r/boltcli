@@ -31,7 +31,7 @@ fn main() {
         
             let area = termimad::Area::full_screen();
              
-            termimad::print_inline(&utils::get_status_line(model.clone()));
+            //termimad::print_inline(&utils::get_status_line(model.clone()));
 
             print!(" {}  ", ">".bold().blue());
 
@@ -85,6 +85,7 @@ fn main() {
             }
 
             if input == "/new" {
+                println!("\n{} Wiped history and started new session.", "✓".bold().green());
                 break;
             }
        
