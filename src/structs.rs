@@ -16,6 +16,7 @@ pub const COMMANDS: &str = r#"
 `/reason` → Print the reason for an AI's response.
 `/switch` → Switch to a different AI model temporarily.
 `/typing` → Toggle whether the generated text is typed.
+`/help`   → Show this message.
 `/exit`   → Exit.
 
 "#;

@@ -18,7 +18,6 @@ fn main() {
         let mut history: Vec<String> = Vec::new();
     
         utils::print_banner(model.clone(), typing_mode);
-        //termimad::print_inline(structs::COMMANDS);
 
         let mut reason = String::new();
     
@@ -77,6 +76,11 @@ fn main() {
                 model = model.trim().to_string();
 
                 println!("\n{} Switched to {}\n", "✓".bold().green(), model);
+                continue;
+            }
+
+            if input == "/help" {
+                termimad::print_inline(structs::COMMANDS);
                 continue;
             }
 

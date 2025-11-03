@@ -194,4 +194,6 @@ pub fn print_banner(model_name: String, typing_bool: bool) {
         "▐█".bold().blue());
 
     println!("{}\n", &bottom_line.bold().blue());
+
+    termimad::print_inline("Type `/help` to show all commands.\n\n");
 }
